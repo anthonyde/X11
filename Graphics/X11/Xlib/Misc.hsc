@@ -112,6 +112,7 @@ module Graphics.X11.Xlib.Misc(
         setWMProtocols,
 
         -- * Set window attributes
+        emptySetWindowAttributes,
         allocaSetWindowAttributes,
         set_background_pixmap,
         set_background_pixel,
@@ -935,6 +936,26 @@ foreign import ccall unsafe "HsXlib.h XSetWMProtocols"
 ----------------------------------------------------------------
 -- Set Window Attributes
 ----------------------------------------------------------------
+
+-- | An empty 'SetWindowAttributes' structure
+emptySetWindowAttributes :: SetWindowAttributes
+emptySetWindowAttributes = SetWindowAttributes {
+        setWindowAttributes_backPixmap = 0,
+        setWindowAttributes_backPixel = 0,
+        setWindowAttributes_borderPixmap = 0,
+        setWindowAttributes_borderPixel = 0,
+        setWindowAttributes_bitGravity = 0,
+        setWindowAttributes_windowGravity = 0,
+        setWindowAttributes_backingStore = 0,
+        setWindowAttributes_backingPlanes = 0,
+        setWindowAttributes_backingPixel = 0,
+        setWindowAttributes_saveUnder = False,
+        setWindowAttributes_eventMask = 0,
+        setWindowAttributes_doNotPropagateMask = 0,
+        setWindowAttributes_overrideRedirect = False,
+        setWindowAttributes_colormap = 0,
+        setWindowAttributes_cursor = 0
+        }
 
 -- ToDo: generate this kind of stuff automatically.
 

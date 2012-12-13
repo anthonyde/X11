@@ -15,7 +15,8 @@
 
 -- #hide
 module Graphics.X11.Xlib.Types(
-        Display(..), Screen(..), Visual(..), GC(..), GCValues, SetWindowAttributes,
+        Display(..), Screen(..), Visual(..), GC(..), GCValues,
+        SetWindowAttributes(..),
         Image(..), Point(..), Rectangle(..), Arc(..), Segment(..), Color(..),
         Pixel, Position, Dimension, Angle, ScreenNumber, Buffer
         ) where
@@ -27,6 +28,8 @@ import Foreign.C.Types
 -- import Foreign.Marshal.Alloc( allocaBytes )
 import Foreign.Ptr
 import Foreign.Storable( Storable(..) )
+
+import Graphics.X11.Types
 
 #if __GLASGOW_HASKELL__
 import Data.Data
@@ -78,13 +81,101 @@ newtype GCValues   = GCValues  (Ptr GCValues)
         deriving (Eq, Ord, Show)
 #endif
 
--- | pointer to an X11 @XSetWindowAttributes@ structure
-newtype SetWindowAttributes = SetWindowAttributes (Ptr SetWindowAttributes)
+-- | counterpart of an X11 @XSetWindowAttributes@ structure
+data SetWindowAttributes = SetWindowAttributes {
+        setWindowAttributes_backPixmap :: Pixmap,
+        setWindowAttributes_backPixel :: Pixel,
+        setWindowAttributes_borderPixmap :: Pixmap,
+        setWindowAttributes_borderPixel :: Pixel,
+        setWindowAttributes_bitGravity :: BitGravity,
+        setWindowAttributes_windowGravity :: WindowGravity,
+        setWindowAttributes_backingStore :: BackingStore,
+        setWindowAttributes_backingPlanes :: Pixel,
+        setWindowAttributes_backingPixel :: Pixel,
+        setWindowAttributes_saveUnder :: Bool,
+        setWindowAttributes_eventMask :: EventMask,
+        setWindowAttributes_doNotPropagateMask :: EventMask,
+        setWindowAttributes_overrideRedirect :: Bool,
+        setWindowAttributes_colormap :: Colormap,
+        setWindowAttributes_cursor :: Cursor
+        }
 #if __GLASGOW_HASKELL__
-        deriving (Eq, Ord, Show, Typeable, Data)
+        deriving (Eq, Ord, Show, Typeable)
 #else
         deriving (Eq, Ord, Show)
 #endif
+
+instance Storable SetWindowAttributes where
+        sizeOf _ = #size XSetWindowAttributes
+        alignment _ = alignment (undefined::CInt)
+        peek p = do
+                backPixmap <- #{peek XSetWindowAttributes, background_pixmap} p
+                backPixel <- #{peek XSetWindowAttributes, background_pixel} p
+                borderPixmap <- #{peek XSetWindowAttributes, border_pixmap} p
+                borderPixel <- #{peek XSetWindowAttributes, border_pixel} p
+                bitGravity <- #{peek XSetWindowAttributes, bit_gravity} p
+                winGravity <- #{peek XSetWindowAttributes, win_gravity} p
+                backingStore <- #{peek XSetWindowAttributes, backing_store} p
+                backingPlanes <- #{peek XSetWindowAttributes, backing_planes} p
+                backingPixel <- #{peek XSetWindowAttributes, backing_pixel} p
+                saveUnder <- #{peek XSetWindowAttributes, save_under} p
+                eventMask <- #{peek XSetWindowAttributes, event_mask} p
+                doNotPropagateMask <- #{peek XSetWindowAttributes,
+                        do_not_propagate_mask} p
+                overrideRedirect <- #{peek XSetWindowAttributes,
+                        override_redirect} p
+                colormap <- #{peek XSetWindowAttributes, colormap} p
+                cursor <- #{peek XSetWindowAttributes, cursor} p
+                return $ SetWindowAttributes {
+                        setWindowAttributes_backPixmap = backPixmap,
+                        setWindowAttributes_backPixel = backPixel,
+                        setWindowAttributes_borderPixmap = borderPixmap,
+                        setWindowAttributes_borderPixel = borderPixel,
+                        setWindowAttributes_bitGravity = bitGravity,
+                        setWindowAttributes_windowGravity = winGravity,
+                        setWindowAttributes_backingStore = backingStore,
+                        setWindowAttributes_backingPlanes = backingPlanes,
+                        setWindowAttributes_backingPixel = backingPixel,
+                        setWindowAttributes_saveUnder = saveUnder,
+                        setWindowAttributes_eventMask = eventMask,
+                        setWindowAttributes_doNotPropagateMask =
+                                doNotPropagateMask,
+                        setWindowAttributes_overrideRedirect =
+                                overrideRedirect,
+                        setWindowAttributes_colormap = colormap,
+                        setWindowAttributes_cursor = cursor
+                        }
+        poke p attrs = do
+                #{poke XSetWindowAttributes, background_pixmap} p $
+                        setWindowAttributes_backPixmap attrs
+                #{poke XSetWindowAttributes, background_pixel} p $
+                        setWindowAttributes_backPixel attrs
+                #{poke XSetWindowAttributes, border_pixmap} p $
+                        setWindowAttributes_borderPixmap attrs
+                #{poke XSetWindowAttributes, border_pixel} p $
+                        setWindowAttributes_borderPixel attrs
+                #{poke XSetWindowAttributes, bit_gravity} p $
+                        setWindowAttributes_bitGravity attrs
+                #{poke XSetWindowAttributes, win_gravity} p $
+                        setWindowAttributes_windowGravity attrs
+                #{poke XSetWindowAttributes, backing_store} p $
+                        setWindowAttributes_backingStore attrs
+                #{poke XSetWindowAttributes, backing_planes} p $
+                        setWindowAttributes_backingPlanes attrs
+                #{poke XSetWindowAttributes, backing_pixel} p $
+                        setWindowAttributes_backingPixel attrs
+                #{poke XSetWindowAttributes, save_under} p $
+                        setWindowAttributes_saveUnder attrs
+                #{poke XSetWindowAttributes, event_mask} p $
+                        setWindowAttributes_eventMask attrs
+                #{poke XSetWindowAttributes, do_not_propagate_mask} p $
+                        setWindowAttributes_doNotPropagateMask attrs
+                #{poke XSetWindowAttributes, override_redirect} p $
+                        setWindowAttributes_overrideRedirect attrs
+                #{poke XSetWindowAttributes, colormap} p $
+                        setWindowAttributes_colormap attrs
+                #{poke XSetWindowAttributes, cursor} p $
+                        setWindowAttributes_cursor attrs
 
 -- | pointer to an X11 @XImage@ structure
 newtype Image    = Image    (Ptr Image)
