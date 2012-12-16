@@ -15,7 +15,7 @@
 
 -- #hide
 module Graphics.X11.Xlib.Types(
-        Display(..), Screen(..), Visual(..), GC(..), GCValues,
+        Display(..), Screen(..), Visual(..), GC(..), GCValues(..),
         SetWindowAttributes(..),
         Image(..), Point(..), Rectangle(..), Arc(..), Segment(..), Color(..),
         Pixel, Position, Dimension, Angle, ScreenNumber, Buffer
@@ -73,13 +73,137 @@ newtype GC         = GC         (Ptr GC)
         deriving (Eq, Ord, Show)
 #endif
 
--- | pointer to an X11 @XGCValues@ structure
-newtype GCValues   = GCValues  (Ptr GCValues)
+-- | counterpart of an X11 @XGCValues@ structure
+data GCValues = GCValues {
+        gCValues_function :: GXFunction,
+        gCValues_planeMask :: Mask,
+        gCValues_foreground :: Pixel,
+        gCValues_background :: Pixel,
+        gCValues_lineWidth :: CInt,
+        gCValues_lineStyle :: LineStyle,
+        gCValues_capStyle :: CapStyle,
+        gCValues_joinStyle :: JoinStyle,
+        gCValues_fillStyle :: FillStyle,
+        gCValues_fillRule :: FillRule,
+        gCValues_arcMode :: ArcMode,
+        gCValues_tile :: Pixmap,
+        gCValues_stipple :: Pixmap,
+        gCValues_tsXOrigin :: CInt,
+        gCValues_tsYOrigin :: CInt,
+        gCValues_font :: Font,
+        gCValues_subwindowMode :: SubWindowMode,
+        gCValues_graphicsExposures :: Bool,
+        gCValues_clipXOrigin :: CInt,
+        gCValues_clipYOrigin :: CInt,
+        gCValues_clipMask :: Pixmap,
+        gCValues_dashOffset :: CInt,
+        gCValues_dashes :: CChar
+        }
 #if __GLASGOW_HASKELL__
-        deriving (Eq, Ord, Show, Typeable, Data)
+        deriving (Eq, Ord, Show, Typeable)
 #else
         deriving (Eq, Ord, Show)
 #endif
+
+instance Storable GCValues where
+        sizeOf _ = #size XGCValues
+        alignment _ = alignment (undefined::CInt)
+        peek p = do
+                function <- #{peek XGCValues, function} p
+                planeMask <- #{peek XGCValues, plane_mask} p
+                foreground <- #{peek XGCValues, foreground} p
+                background <- #{peek XGCValues, background} p
+                lineWidth <- #{peek XGCValues, line_width} p
+                lineStyle <- #{peek XGCValues, line_style} p
+                capStyle <- #{peek XGCValues, cap_style} p
+                joinStyle <- #{peek XGCValues, join_style} p
+                fillStyle <- #{peek XGCValues, fill_style} p
+                fillRule <- #{peek XGCValues, fill_rule} p
+                arcMode <- #{peek XGCValues, arc_mode} p
+                tile <- #{peek XGCValues, tile} p
+                stipple <- #{peek XGCValues, stipple} p
+                tsXOrigin <- #{peek XGCValues, ts_x_origin} p
+                tsYOrigin <- #{peek XGCValues, ts_y_origin} p
+                font <- #{peek XGCValues, font} p
+                subwindowMode <- #{peek XGCValues, subwindow_mode} p
+                graphicsExposures <- #{peek XGCValues, graphics_exposures} p
+                clipXOrigin <- #{peek XGCValues, clip_x_origin} p
+                clipYOrigin <- #{peek XGCValues, clip_y_origin} p
+                clipMask <- #{peek XGCValues, clip_mask} p
+                dashOffset <- #{peek XGCValues, dash_offset} p
+                dashes <- #{peek XGCValues, dashes} p
+                return $ GCValues {
+                        gCValues_function = function,
+                        gCValues_planeMask = planeMask,
+                        gCValues_foreground = foreground,
+                        gCValues_background = background,
+                        gCValues_lineWidth = lineWidth,
+                        gCValues_lineStyle = lineStyle,
+                        gCValues_capStyle = capStyle,
+                        gCValues_joinStyle = joinStyle,
+                        gCValues_fillStyle = fillStyle,
+                        gCValues_fillRule = fillRule,
+                        gCValues_arcMode = arcMode,
+                        gCValues_tile = tile,
+                        gCValues_stipple = stipple,
+                        gCValues_tsXOrigin = tsXOrigin,
+                        gCValues_tsYOrigin = tsYOrigin,
+                        gCValues_font = font,
+                        gCValues_subwindowMode = subwindowMode,
+                        gCValues_graphicsExposures = graphicsExposures,
+                        gCValues_clipXOrigin = clipXOrigin,
+                        gCValues_clipYOrigin = clipYOrigin,
+                        gCValues_clipMask = clipMask,
+                        gCValues_dashOffset = dashOffset,
+                        gCValues_dashes = dashes
+                        }
+        poke p vals = do
+                #{poke XGCValues, function} p $
+                        gCValues_function vals
+                #{poke XGCValues, plane_mask} p $
+                        gCValues_planeMask vals
+                #{poke XGCValues, foreground} p $
+                        gCValues_foreground vals
+                #{poke XGCValues, background} p $
+                        gCValues_background vals
+                #{poke XGCValues, line_width} p $
+                        gCValues_lineWidth vals
+                #{poke XGCValues, line_style} p $
+                        gCValues_lineStyle vals
+                #{poke XGCValues, cap_style} p $
+                        gCValues_capStyle vals
+                #{poke XGCValues, join_style} p $
+                        gCValues_joinStyle vals
+                #{poke XGCValues, fill_style} p $
+                        gCValues_fillStyle vals
+                #{poke XGCValues, fill_rule} p $
+                        gCValues_fillRule vals
+                #{poke XGCValues, arc_mode} p $
+                        gCValues_arcMode vals
+                #{poke XGCValues, tile} p $
+                        gCValues_tile vals
+                #{poke XGCValues, stipple} p $
+                        gCValues_stipple vals
+                #{poke XGCValues, ts_x_origin} p $
+                        gCValues_tsXOrigin vals
+                #{poke XGCValues, ts_y_origin} p $
+                        gCValues_tsYOrigin vals
+                #{poke XGCValues, font} p $
+                        gCValues_font vals
+                #{poke XGCValues, subwindow_mode} p $
+                        gCValues_subwindowMode vals
+                #{poke XGCValues, graphics_exposures} p $
+                        gCValues_graphicsExposures vals
+                #{poke XGCValues, clip_x_origin} p $
+                        gCValues_clipXOrigin vals
+                #{poke XGCValues, clip_y_origin} p $
+                        gCValues_clipYOrigin vals
+                #{poke XGCValues, clip_mask} p $
+                        gCValues_clipMask vals
+                #{poke XGCValues, dash_offset} p $
+                        gCValues_dashOffset vals
+                #{poke XGCValues, dashes} p $
+                        gCValues_dashes vals
 
 -- | counterpart of an X11 @XSetWindowAttributes@ structure
 data SetWindowAttributes = SetWindowAttributes {

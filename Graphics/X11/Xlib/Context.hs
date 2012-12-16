@@ -33,6 +33,7 @@ module Graphics.X11.Xlib.Context(
         setSubwindowMode,
         setTSOrigin,
         setTile,
+        defaultGCValues,
         createGC,
         gContextFromGC,
         freeGC,
@@ -134,6 +135,34 @@ foreign import ccall unsafe "HsXlib.h XSetTSOrigin"
 -- | interface to the X11 library function @XSetTile()@.
 foreign import ccall unsafe "HsXlib.h XSetTile"
         setTile              :: Display -> GC -> Pixmap                -> IO ()
+
+-- | A default 'GCValues' structure
+defaultGCValues :: GCValues
+defaultGCValues = GCValues {
+        gCValues_function = gXcopy,
+        gCValues_planeMask = -1,
+        gCValues_foreground = 0,
+        gCValues_background = 1,
+        gCValues_lineWidth = 0,
+        gCValues_lineStyle = lineSolid,
+        gCValues_capStyle = capButt,
+        gCValues_joinStyle = joinMiter,
+        gCValues_fillStyle = fillSolid,
+        gCValues_fillRule = evenOddRule,
+        gCValues_arcMode = arcPieSlice,
+        gCValues_tile = 0,
+        gCValues_stipple = 0,
+        gCValues_tsXOrigin = 0,
+        gCValues_tsYOrigin = 0,
+        gCValues_font = 0,
+        gCValues_subwindowMode = clipByChildren,
+        gCValues_graphicsExposures = True,
+        gCValues_clipXOrigin = 0,
+        gCValues_clipYOrigin = 0,
+        gCValues_clipMask = 0,
+        gCValues_dashOffset = 0,
+        gCValues_dashes = 4
+        }
 
 -- ToDo: create a real interface to this
 -- | partial interface to the X11 library function @XCreateGC()@.
